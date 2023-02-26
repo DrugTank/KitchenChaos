@@ -6,6 +6,14 @@ using UnityEngine.EventSystems;
 
 public class CuttingCounter : BaseCounter, IHasProgress
 {
+    // static event의 경우 씬 전환간에 구독 취소가 되지않으면 에러를 일으킬 수 있음
+    public static event EventHandler OnAnyCut;
+
+    new public static void ResetStaticData()
+    {
+        OnAnyCut = null;    
+    }
+
     public event EventHandler OnCut;
     public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
 
@@ -68,6 +76,7 @@ public class CuttingCounter : BaseCounter, IHasProgress
             cuttingProgress++;
 
             OnCut?.Invoke(this, EventArgs.Empty);
+            OnAnyCut?.Invoke(this, EventArgs.Empty);    
 
             CuttingRecipeSO cuttingRecipeSO = GetCuttingRecipeSOWithInput(GetKitchenObject().GetKitchenObjectSO());
 
